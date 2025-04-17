@@ -4,7 +4,7 @@
 
 **什么是短链接？**
 
-常见的链接一般都是这样：`https://github.com/hobbyGG/shortLink-go`,短链接顾名思义就是长度很短的一个链接，如下图所示。
+常见的链接一般都是这样：[https://github.com/hobbyGG/shortLink-go](https://github.com/hobbyGG/shortLink-go),短链接顾名思义就是长度很短的一个链接，如下图所示。
 ![short link](static/916299411bbb32cb750408022c38fea.jpg)
 一般都是`[域名]/[标识符]`这种格式，`/`后的位数受发送数量的影响
 
