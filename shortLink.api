@@ -1,0 +1,27 @@
+syntax = "v1"
+
+service shortLink-api {
+	// 转链服务
+	@handler ConvertHandler
+	get /convert (ConvertRequest) returns (ConvertResponse)
+
+	// 查询模块，通过短链找长链
+	@handler SearchHandler
+	get /search/:sURL (SearchRequest) returns (SearchResponse)
+}
+
+type ConvertRequest {
+	LongURL string `json:"longURL" validator:"required"`
+}
+
+type ConvertResponse {
+	ShortURL string `json:"shortURL"`
+}
+
+type SearchRequest {
+	ShortURL string `path:"sURL" validator:"required"`
+}
+
+type SearchResponse {
+	LongURL string `json:"longURL"`
+}
