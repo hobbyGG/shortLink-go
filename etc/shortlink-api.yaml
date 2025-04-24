@@ -7,3 +7,5 @@ SequenceMysql:
 
 SLMapMysql: 
   Datasource: "root:123@tcp(127.0.0.1:13306)/slDB?charset=utf8mb4&parseTime=True&loc=Local"
+
+ShortURLBlackList: ["version", "health", "convert", "search"]

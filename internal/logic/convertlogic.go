@@ -4,14 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"net/url"
-	"strings"
 
 	"shortLink/internal/svc"
 	"shortLink/internal/types"
 	"shortLink/model"
-	"shortLink/pkg/ping"
+	"shortLink/pkg/base62"
 	"shortLink/pkg/salt"
+	"shortLink/pkg/urlp"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -34,21 +33,18 @@ func (l *ConvertLogic) Convert(req *types.ConvertRequest) (resp *types.ConvertRe
 	// 数据校验
 	// 1 不能为空
 	// 2 长链接必须有效
-	if !ping.New(req.LongURL) {
-		// ping不通则拒绝
-		return nil, errors.New("无效的链接")
-	}
+	// if !ping.New(req.LongURL) {
+	// 	// ping不通则拒绝
+	// 	return nil, errors.New("无效的链接")
+	// }
 	// 3 不能是短链接
 	// 获取短链接
-	parsedURL, err := url.Parse(req.LongURL)
+	lastURL, err := urlp.GetLastPath(req.LongURL)
 	if err != nil {
-		logx.Errorw("err", logx.LogField{Key: "url.Parse", Value: err})
+		logx.Errorw("convertlogic", logx.Field("err", err))
 		return nil, err
 	}
-	path := parsedURL.Path
-	parts := strings.Split(path, "/")
-	lastURL := parts[len(parts)-1]
-	_, err = l.svcCtx.MapModel.FindOneBySurl(l.ctx, sql.NullString{String: lastURL})
+	_, err = l.svcCtx.MapModel.FindOneBySurl(l.ctx, sql.NullString{String: lastURL, Valid: true})
 	if err != model.ErrNotFound {
 		// 只要不是没有找到的错误都不能进行
 		if err != nil {
@@ -72,5 +68,33 @@ func (l *ConvertLogic) Convert(req *types.ConvertRequest) (resp *types.ConvertRe
 		return nil, errors.New("已经存在")
 	}
 
-	return
+	var shortPath string
+	for {
+		// 取号
+		// 使用replace插入sequence，获取新的主键
+		seq, err := l.svcCtx.Sequence.Get()
+		if err != nil {
+			logx.Errorw("convertlogic error", logx.Field("l.svcCtx.Sequence.Get", err))
+		}
+
+		// 转为base62
+		shortPath = base62.Uint2string(seq)
+		// 不能出现特殊词
+		if _, ok := l.svcCtx.ShortURLBlackList[shortPath]; !ok {
+			// 没有出现特殊词
+			break
+		}
+	}
+
+	ShortURL := "127.0.0.1/" + shortPath
+	_, err = l.svcCtx.MapModel.Insert(l.ctx, &model.ShortUrlMap{
+		Lurl: sql.NullString{String: md5LongURL, Valid: true},
+		Surl: sql.NullString{String: ShortURL, Valid: true},
+	})
+	if err != nil {
+		logx.Errorw("convert error", logx.Field("error", err))
+		return nil, err
+	}
+
+	return &types.ConvertResponse{ShortURL: ShortURL}, nil
 }

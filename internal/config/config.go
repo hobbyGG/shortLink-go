@@ -10,4 +10,6 @@ type Config struct {
 	SLMapMysql struct {
 		Datasource string
 	}
+
+	ShortURLBlackList []string
 }
