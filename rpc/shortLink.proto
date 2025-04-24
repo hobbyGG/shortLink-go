@@ -2,5 +2,25 @@ syntax = "proto3";
 
 package shortLink;
 
-option go_package = "./proto";
+option go_package = "./shortLink";
 
+service ShortLinkService {
+    rpc Convert (ConvertRequest) returns (ConvertResponse) {}
+    rpc Search (SearchRequest) returns (SearchResponse) {}
+}
+
+message ConvertRequest {
+    string long_url = 1;
+}
+
+message ConvertResponse {
+    string short_url = 1;
+}
+
+message SearchRequest {
+    string short_url = 1;
+}
+
+message SearchResponse {
+    string long_url = 1;
+}
