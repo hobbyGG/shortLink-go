@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"errors"
 
-	"shortLink/internal/svc"
-	"shortLink/internal/types"
+	"shortLink/api/internal/svc"
+	"shortLink/api/internal/types"
 	"shortLink/model"
 	"shortLink/pkg/base62"
 	"shortLink/pkg/salt"

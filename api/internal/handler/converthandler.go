@@ -3,9 +3,9 @@ package handler
 import (
 	"net/http"
 
-	"shortLink/internal/logic"
-	"shortLink/internal/svc"
-	"shortLink/internal/types"
+	"shortLink/api/internal/logic"
+	"shortLink/api/internal/svc"
+	"shortLink/api/internal/types"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/zeromicro/go-zero/rest/httpx"

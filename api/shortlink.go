@@ -4,9 +4,9 @@ import (
 	"flag"
 	"fmt"
 
-	"shortLink/internal/config"
-	"shortLink/internal/handler"
-	"shortLink/internal/svc"
+	"shortLink/api/internal/config"
+	"shortLink/api/internal/handler"
+	"shortLink/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"

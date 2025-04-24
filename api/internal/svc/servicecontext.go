@@ -1,7 +1,7 @@
 package svc
 
 import (
-	"shortLink/internal/config"
+	"shortLink/api/internal/config"
 	"shortLink/model"
 	mysqlse "shortLink/model/mysql"
 	"shortLink/model/sequence"

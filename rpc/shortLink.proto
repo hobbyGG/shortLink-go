@@ -1,0 +1,6 @@
+syntax = "proto3";
+
+package shortLink;
+
+option go_package = "./proto";
+
