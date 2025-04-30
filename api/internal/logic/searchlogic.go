@@ -2,6 +2,8 @@ package logic
 
 import (
 	"context"
+	"database/sql"
+	"fmt"
 
 	"shortLink/api/internal/svc"
 	"shortLink/api/internal/types"
@@ -24,7 +26,16 @@ func NewSearchLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SearchLogi
 }
 
 func (l *SearchLogic) Search(req *types.SearchRequest) (resp *types.SearchResponse, err error) {
-	// todo: add your logic here and delete this line
+	shortURL := req.ShortURL
+	fmt.Println("shortURL:", shortURL)
+	// 通过shortURL找到longURL
+	// 将长连接返回给handler
+	// handler使用302跳转到longURL
+	// 后续添加redis缓存，并处理缓存雪崩和缓存击穿
+	slMap, err := l.svcCtx.MapModel.FindOneBySurl(l.ctx, sql.NullString{String: shortURL, Valid: true})
+	if err != nil {
+		return nil, err
+	}
 
-	return
+	return &types.SearchResponse{LongURL: slMap.Lurl.String}, nil
 }

@@ -44,6 +44,7 @@ type (
 		CreateBy string         `db:"create_by"`
 		IsDel    uint64         `db:"is_del"`
 		Lurl     sql.NullString `db:"lurl"`
+		LurlMd5  sql.NullString `db:"lurl_md5"`
 		Surl     sql.NullString `db:"surl"`
 	}
 )
@@ -104,14 +105,14 @@ func (m *defaultShortUrlMapModel) FindOneBySurl(ctx context.Context, surl sql.Nu
 }
 
 func (m *defaultShortUrlMapModel) Insert(ctx context.Context, data *ShortUrlMap) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?)", m.table, shortUrlMapRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.CreateBy, data.IsDel, data.Lurl, data.Surl)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.table, shortUrlMapRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.CreateBy, data.IsDel, data.Lurl, data.LurlMd5, data.Surl)
 	return ret, err
 }
 
 func (m *defaultShortUrlMapModel) Update(ctx context.Context, newData *ShortUrlMap) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, shortUrlMapRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.CreateBy, newData.IsDel, newData.Lurl, newData.Surl, newData.Id)
+	_, err := m.conn.ExecCtx(ctx, query, newData.CreateBy, newData.IsDel, newData.Lurl, newData.LurlMd5, newData.Surl, newData.Id)
 	return err
 }
 

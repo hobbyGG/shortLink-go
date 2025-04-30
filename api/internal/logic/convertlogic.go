@@ -86,15 +86,16 @@ func (l *ConvertLogic) Convert(req *types.ConvertRequest) (resp *types.ConvertRe
 		}
 	}
 
-	ShortURL := "127.0.0.1/" + shortPath
 	_, err = l.svcCtx.MapModel.Insert(l.ctx, &model.ShortUrlMap{
-		Lurl: sql.NullString{String: md5LongURL, Valid: true},
-		Surl: sql.NullString{String: ShortURL, Valid: true},
+		Lurl:    sql.NullString{String: req.LongURL, Valid: true},
+		LurlMd5: sql.NullString{String: md5LongURL, Valid: true},
+		Surl:    sql.NullString{String: shortPath, Valid: true},
 	})
 	if err != nil {
 		logx.Errorw("convert error", logx.Field("error", err))
 		return nil, err
 	}
+	ShortURL := "127.0.0.1/" + shortPath
 
 	return &types.ConvertResponse{ShortURL: ShortURL}, nil
 }
